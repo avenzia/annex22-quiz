@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Annex 22 (신규제정) Quiz · Artificial Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<!-- EmailJS for sending result emails -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<!-- SheetJS for XLSX export -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root {
+  --navy:#0D1F3C; --navy2:#16325C; --blue:#1A5CBA; --blue2:#2270D8;
+  --accent:#00C2CB; --accent2:#00A8B0;
+  --success:#00B67A; --danger:#E53E3E;
+  --white:#FFFFFF; --off:#F4F7FB; --gray:#8899AA; --gray2:#C8D4E0;
+  --card:#FFFFFF; --border:rgba(26,92,186,0.13);
+  --shadow:0 4px 28px rgba(13,31,60,0.10);
+  --shadow2:0 2px 8px rgba(13,31,60,0.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans KR','Inter',sans-serif;background:var(--off);color:var(--navy);min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+
+/* TOP BAR */
+.topbar{width:100%;background:var(--navy);display:flex;align-items:center;padding:10px 20px;position:sticky;top:0;z-index:50;gap:8px;border-bottom:2px solid var(--blue);}
+.topbar-logo{font-family:'Inter',sans-serif;font-size:13px;font-weight:800;color:var(--white);letter-spacing:2px;margin-right:auto;display:flex;align-items:center;gap:8px;}
+.topbar-logo span{background:var(--accent);color:var(--navy);border-radius:4px;padding:2px 7px;font-size:11px;font-weight:800;letter-spacing:1px;}
+.hall-btn{padding:6px 14px;border-radius:6px;border:1.5px solid rgba(0,194,203,0.4);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:11px;font-weight:700;color:var(--accent);cursor:pointer;letter-spacing:1px;transition:all 0.2s;margin-right:8px;}
+.hall-btn:hover{background:var(--accent);color:var(--navy);}
+.lang-btn{padding:6px 13px;border-radius:6px;border:1.5px solid rgba(255,255,255,0.2);background:transparent;font-family:'Noto Sans KR',sans-serif;font-size:11px;font-weight:600;color:rgba(255,255,255,0.7);cursor:pointer;letter-spacing:1px;transition:all 0.2s;}
+.lang-btn.active{background:var(--blue2);border-color:var(--blue2);color:var(--white);}
+.lang-btn:hover:not(.active){border-color:rgba(255,255,255,0.5);color:var(--white);}
+
+/* CONTAINER */
+.container{width:100%;max-width:680px;padding:28px 20px 60px;}
+
+/* SCREEN */
+.screen{display:none;animation:fadeUp 0.4s ease;}
+.screen.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+/* CARD */
+.card{background:var(--card);border-radius:16px;padding:36px 32px;box-shadow:var(--shadow);border:1px solid var(--border);}
+
+/* ── START SCREEN ── */
+.start-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(26,92,186,0.08);border:1px solid rgba(26,92,186,0.2);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;color:var(--blue);letter-spacing:2px;text-transform:uppercase;margin-bottom:18px;}
+.start-title{font-family:'Inter',sans-serif;font-size:26px;font-weight:800;color:var(--navy);line-height:1.25;margin-bottom:6px;}
+.start-title em{color:var(--blue2);font-style:normal;}
+.start-sub{font-size:13px;color:var(--gray);letter-spacing:1px;margin-bottom:24px;font-weight:400;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:28px;}
+.info-box{background:var(--off);border-radius:10px;padding:14px 12px;text-align:center;border:1px solid var(--border);}
+.info-box .val{font-family:'Inter',sans-serif;font-size:20px;font-weight:800;color:var(--blue2);}
+.info-box .lbl{font-size:10px;color:var(--gray);letter-spacing:1px;margin-top:3px;text-transform:uppercase;}
+.divider{height:1px;background:var(--border);margin:24px 0;}
+.field-label{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--blue);margin-bottom:8px;text-transform:uppercase;}
+.name-input{width:100%;padding:13px 16px;border:1.5px solid var(--gray2);border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:15px;color:var(--navy);background:var(--white);outline:none;margin-bottom:20px;transition:border-color 0.2s;}
+.name-input:focus{border-color:var(--blue2);box-shadow:0 0 0 3px rgba(26,92,186,0.10);}
+.name-input::placeholder{color:var(--gray2);}
+.count-label{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--blue);margin-bottom:12px;text-transform:uppercase;text-align:center;}
+.count-buttons{display:flex;gap:10px;justify-content:center;margin-bottom:24px;}
+.count-btn{flex:1;max-width:110px;padding:14px 8px;border:1.5px solid var(--gray2);background:var(--white);border-radius:10px;font-family:'Inter',sans-serif;font-size:22px;font-weight:800;color:var(--gray);cursor:pointer;transition:all 0.2s;text-align:center;}
+.count-btn span{display:block;font-family:'Noto Sans KR',sans-serif;font-size:10px;font-weight:500;color:var(--gray);margin-top:2px;letter-spacing:1px;}
+.count-btn:hover,.count-btn.selected{border-color:var(--blue2);background:rgba(26,92,186,0.06);color:var(--blue2);transform:translateY(-2px);box-shadow:0 4px 14px rgba(26,92,186,0.12);}
+.count-btn.selected span{color:var(--blue2);}
+.start-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:var(--white);border:none;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:all 0.25s;box-shadow:0 4px 18px rgba(26,92,186,0.30);}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,92,186,0.38);}
+.start-btn:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none;}
+.footer-note{text-align:center;font-size:11px;color:var(--gray);opacity:0.6;margin-top:20px;letter-spacing:1px;}
+
+/* ── QUIZ SCREEN ── */
+.quiz-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.quiz-progress-text{font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;color:var(--blue);}
+.quiz-score-text{font-size:12px;color:var(--gray);font-weight:500;}
+.progress-bar{width:100%;height:5px;background:var(--gray2);border-radius:3px;margin-bottom:24px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--accent));border-radius:3px;transition:width 0.5s ease;}
+
+/* Q type badges */
+.type-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:2px;padding:4px 12px;border-radius:20px;margin-bottom:12px;text-transform:uppercase;}
+.type-badge.ox{background:rgba(0,194,203,0.10);color:var(--accent2);border:1px solid rgba(0,194,203,0.25);}
+.type-badge.mc{background:rgba(26,92,186,0.08);color:var(--blue2);border:1px solid rgba(26,92,186,0.2);}
+
+.question-text{font-size:17px;font-weight:700;color:var(--navy);line-height:1.55;margin-bottom:22px;}
+
+/* OX options */
+.ox-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.ox-btn{padding:22px 10px;border:2px solid var(--gray2);background:var(--white);border-radius:12px;font-family:'Inter',sans-serif;font-size:28px;font-weight:800;color:var(--gray);cursor:pointer;transition:all 0.2s;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.ox-btn span{font-family:'Noto Sans KR',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;}
+.ox-btn:hover:not(:disabled){border-color:var(--blue2);background:rgba(26,92,186,0.04);transform:translateY(-2px);}
+.ox-btn.selected{border-color:var(--blue2);background:rgba(26,92,186,0.07);color:var(--blue2);}
+.ox-btn.correct{border-color:var(--success);background:rgba(0,182,122,0.08);color:var(--success);}
+.ox-btn.wrong{border-color:var(--danger);background:rgba(229,62,62,0.07);color:var(--danger);}
+.ox-btn:disabled{cursor:default;}
+
+/* MC options */
+.mc-grid{display:grid;grid-template-columns:1fr;gap:9px;margin-bottom:16px;}
+.mc-btn{padding:14px 16px;border:1.5px solid var(--gray2);background:var(--white);border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:500;color:var(--navy);cursor:pointer;transition:all 0.2s;text-align:left;line-height:1.4;display:flex;align-items:center;gap:12px;}
+.mc-btn-num{width:26px;height:26px;border-radius:50%;background:var(--off);border:1.5px solid var(--gray2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gray);flex-shrink:0;transition:all 0.2s;}
+.mc-btn:hover:not(:disabled){border-color:var(--blue2);background:rgba(26,92,186,0.04);}
+.mc-btn:hover:not(:disabled) .mc-btn-num{background:var(--blue2);border-color:var(--blue2);color:var(--white);}
+.mc-btn.selected{border-color:var(--blue2);background:rgba(26,92,186,0.06);}
+.mc-btn.selected .mc-btn-num{background:var(--blue2);border-color:var(--blue2);color:var(--white);}
+.mc-btn.correct{border-color:var(--success);background:rgba(0,182,122,0.07);}
+.mc-btn.correct .mc-btn-num{background:var(--success);border-color:var(--success);color:var(--white);}
+.mc-btn.wrong{border-color:var(--danger);background:rgba(229,62,62,0.06);}
+.mc-btn.wrong .mc-btn-num{background:var(--danger);border-color:var(--danger);color:var(--white);}
+.mc-btn:disabled{cursor:default;}
+
+.check-btn{width:100%;padding:14px;background:var(--navy);color:var(--white);border:none;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:all 0.2s;margin-bottom:12px;}
+.check-btn:hover:not(:disabled){background:var(--navy2);transform:translateY(-1px);}
+.check-btn:disabled{opacity:0.3;cursor:not-allowed;transform:none;}
+
+.feedback-box{display:none;border-radius:12px;padding:16px 18px;animation:slideUp 0.3s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.feedback-box.correct-fb{background:rgba(0,182,122,0.08);border:1.5px solid rgba(0,182,122,0.25);}
+.feedback-box.wrong-fb{background:rgba(229,62,62,0.06);border:1.5px solid rgba(229,62,62,0.2);}
+.feedback-result{font-size:14px;font-weight:700;margin-bottom:7px;}
+.correct-fb .feedback-result{color:var(--success);}
+.wrong-fb .feedback-result{color:var(--danger);}
+.feedback-explanation{font-size:12px;color:var(--navy);line-height:1.75;opacity:0.8;}
+.next-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:var(--white);border:none;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:1px;margin-top:12px;display:none;transition:all 0.2s;box-shadow:0 4px 14px rgba(26,92,186,0.25);}
+.next-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,92,186,0.35);}
+
+/* ── RESULT SCREEN ── */
+.result-header{text-align:center;margin-bottom:24px;}
+.result-emoji{font-size:48px;margin-bottom:10px;}
+.result-title{font-family:'Inter',sans-serif;font-size:22px;font-weight:800;color:var(--navy);margin-bottom:4px;}
+.result-sub{font-size:12px;color:var(--gray);letter-spacing:2px;}
+.score-ring-wrap{display:flex;justify-content:center;margin:20px 0 24px;}
+.score-ring{width:130px;height:130px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--accent));display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(26,92,186,0.30);}
+.score-num{font-family:'Inter',sans-serif;font-size:38px;font-weight:800;color:var(--white);line-height:1;}
+.score-denom{font-size:11px;color:rgba(255,255,255,0.75);margin-top:2px;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.stat-box{background:var(--off);border-radius:10px;padding:14px;text-align:center;border:1px solid var(--border);}
+.stat-val{font-family:'Inter',sans-serif;font-size:24px;font-weight:800;color:var(--blue2);}
+.stat-lbl{font-size:10px;color:var(--gray);letter-spacing:1px;margin-top:3px;text-transform:uppercase;}
+.result-msg{text-align:center;font-size:13px;line-height:1.8;color:var(--navy);opacity:0.7;margin-bottom:20px;font-style:italic;}
+.section-title{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--blue);margin-bottom:10px;text-align:center;text-transform:uppercase;}
+.top10-list{margin-bottom:20px;}
+.rank-row{display:flex;align-items:center;padding:9px 12px;border-radius:8px;margin-bottom:5px;background:var(--off);border:1px solid var(--border);}
+.rank-row.me{background:rgba(26,92,186,0.07);border-color:rgba(26,92,186,0.2);}
+.rank-num{font-family:'Inter',sans-serif;font-size:14px;font-weight:700;width:30px;color:var(--gray);}
+.rank-num.gold{color:#D4A017;} .rank-num.silver{color:#8899AA;} .rank-num.bronze{color:#A0522D;}
+.rank-name{flex:1;font-size:13px;color:var(--navy);}
+.rank-score{font-size:13px;font-weight:700;color:var(--blue2);}
+.retry-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:var(--white);border:none;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:all 0.25s;box-shadow:0 4px 18px rgba(26,92,186,0.28);}
+.retry-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,92,186,0.38);}
+
+/* ── HALL OF FAME ── */
+.hof-title-wrap{text-align:center;margin-bottom:24px;}
+.hof-icon{font-size:36px;margin-bottom:8px;}
+.hof-title{font-family:'Inter',sans-serif;font-size:22px;font-weight:800;color:var(--navy);margin-bottom:4px;}
+.hof-sub{font-size:11px;color:var(--gray);letter-spacing:2px;text-transform:uppercase;}
+.hof-table{width:100%;border-collapse:collapse;margin-bottom:24px;}
+.hof-table th{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--blue);text-align:left;padding:9px 12px;border-bottom:2px solid rgba(26,92,186,0.15);text-transform:uppercase;}
+.hof-table th:last-child{text-align:right;}
+.hof-table td{padding:11px 12px;font-size:13px;color:var(--navy);border-bottom:1px solid var(--border);}
+.hof-table td:last-child{text-align:right;font-weight:700;color:var(--blue2);}
+.hof-table tr:hover td{background:rgba(26,92,186,0.03);}
+.hof-rank-cell{font-family:'Inter',sans-serif;font-size:15px;font-weight:700;width:40px;}
+.hof-back-btn{width:100%;padding:14px;background:var(--navy);color:var(--white);border:none;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:all 0.2s;margin-bottom:10px;}
+.hof-back-btn:hover{background:var(--navy2);transform:translateY(-1px);}
+.hof-restart-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:var(--white);border:none;border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:all 0.2s;box-shadow:0 4px 14px rgba(26,92,186,0.25);}
+.hof-restart-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,92,186,0.35);}
+.download-btn{width:100%;padding:13px;background:var(--white);color:var(--accent2);border:1.5px solid var(--accent2);border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:all 0.2s;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.download-btn:hover{background:var(--accent2);color:var(--white);transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,168,176,0.25);}
+.download-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.email-status{font-size:11px;color:var(--gray);text-align:center;margin-top:8px;letter-spacing:0.5px;}
+.email-status.success{color:var(--success);}
+.email-status.error{color:var(--danger);}
+.hof-loading{text-align:center;padding:36px;font-size:28px;animation:pulse 1.2s infinite;}
+@keyframes pulse{0%,100%{opacity:0.4;}50%{opacity:1;}}
+.hof-empty{text-align:center;padding:36px;color:var(--gray);font-size:13px;line-height:1.8;}
+
+/* SAVING */
+.saving-overlay{display:none;position:fixed;inset:0;background:rgba(13,31,60,0.55);z-index:100;align-items:center;justify-content:center;}
+.saving-overlay.show{display:flex;}
+.saving-box{background:var(--white);border-radius:16px;padding:28px 36px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.2);}
+.saving-spin{font-size:32px;animation:spin 1s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.saving-box p{font-size:14px;font-weight:700;color:var(--navy);margin-top:10px;}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-logo">
+    <span>GMP</span> QUIZ
+  </div>
+  <button class="hall-btn" id="hall-btn" onclick="showHallOfFame()">🏆 명예의 전당</button>
+  <button class="lang-btn active" id="btn-ko" onclick="setLang('ko')">한국어</button>
+  <button class="lang-btn" id="btn-en" onclick="setLang('en')">English</button>
+</div>
+
+<div class="container">
+
+  <!-- START -->
+  <div class="screen active" id="screen-start">
+    <div class="card">
+      <div class="start-badge" id="start-badge">📋 GMP Annex 22 Quiz</div>
+      <h1 class="start-title" id="start-title">Annex 22 (신규제정)<br><em>Artificial Intelligence</em></h1>
+      <p class="start-sub" id="start-sub">PIC/S GMP Annex 22 · AI/ML · Static Model · 10 Sections</p>
+      <div class="info-grid">
+        <div class="info-box"><div class="val">30</div><div class="lbl" id="lbl-q">문제</div></div>
+        <div class="info-box"><div class="val">O/X</div><div class="lbl" id="lbl-ox">+ 객관식</div></div>
+        <div class="info-box"><div class="val">FDA</div><div class="lbl" id="lbl-fda">실사 기반</div></div>
+      </div>
+      <div class="divider"></div>
+      <p class="field-label" id="label-name">참여자 이름</p>
+      <input class="name-input" id="name-input" type="text" placeholder="이름을 입력하세요" oninput="onNameInput()">
+      <button class="start-btn" id="start-btn" onclick="startQuiz()" disabled id="start-btn">퀴즈 시작하기 →</button>
+    </div>
+    <p class="footer-note" id="footer-note">본 퀴즈는 PIC/S Annex 22 (신규제정·인공지능) 학습 목적으로 제작되었습니다</p>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="screen" id="screen-quiz">
+    <div class="card">
+      <div class="quiz-header">
+        <span class="quiz-progress-text" id="progress-text">1 / 10</span>
+        <span class="quiz-score-text" id="score-text">점수: 0</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <span class="type-badge" id="type-badge"></span>
+      <p class="question-text" id="question-text"></p>
+      <div id="options-area"></div>
+      <button class="check-btn" id="check-btn" onclick="checkAnswer()" disabled>정답 확인</button>
+      <div class="feedback-box" id="feedback-box">
+        <p class="feedback-result" id="feedback-result"></p>
+        <p class="feedback-explanation" id="feedback-explanation"></p>
+      </div>
+      <button class="next-btn" id="next-btn" onclick="nextQuestion()">다음 문제 →</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="screen" id="screen-result">
+    <div class="card">
+      <div class="result-header">
+        <div class="result-emoji" id="result-emoji">🏆</div>
+        <div class="result-title" id="result-title">퀴즈 완료!</div>
+        <div class="result-sub">QUIZ COMPLETE</div>
+      </div>
+      <div class="score-ring-wrap">
+        <div class="score-ring">
+          <div class="score-num" id="final-score">0</div>
+          <div class="score-denom" id="final-total">/ 30 pts</div>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-val" id="stat-correct">0</div><div class="stat-lbl" id="lbl-correct">정답</div></div>
+        <div class="stat-box"><div class="stat-val" id="stat-wrong">0</div><div class="stat-lbl" id="lbl-wrong">오답</div></div>
+      </div>
+      <p class="result-msg" id="result-msg"></p>
+      <p class="section-title" id="top10-title">🏅 TOP 10 랭킹</p>
+      <div class="top10-list" id="top10-list"><div class="hof-loading">⏳</div></div>
+      <button class="retry-btn" id="retry-btn" onclick="resetQuiz()">다시 도전하기 →</button>
+      <button class="download-btn" id="result-download-btn" onclick="downloadXlsx()" style="margin-top:10px;">📥 <span id="download-btn-label">전체 결과 엑셀 다운로드</span></button>
+      <p class="email-status" id="email-status"></p>
+    </div>
+  </div>
+
+  <!-- HALL OF FAME -->
+  <div class="screen" id="screen-hof">
+    <div class="card">
+      <div class="hof-title-wrap">
+        <div class="hof-icon">🏆</div>
+        <div class="hof-title" id="hof-title">명예의 전당</div>
+        <div class="hof-sub" id="hof-sub">TOP 20 RANKING</div>
+      </div>
+      <div id="hof-content"><div class="hof-loading">⏳</div></div>
+      <button class="hof-back-btn" id="hof-back-btn" onclick="goBack()">← 돌아가기</button>
+      <button class="hof-restart-btn" id="hof-restart-btn" onclick="resetQuiz()">처음으로 →</button>
+      <button class="download-btn" id="hof-download-btn" onclick="downloadXlsx()" style="margin-top:10px;">📥 <span id="hof-download-btn-label">전체 결과 엑셀 다운로드</span></button>
+    </div>
+  </div>
+
+</div>
+
+<div class="saving-overlay" id="saving-overlay">
+  <div class="saving-box">
+    <div class="saving-spin">⚙️</div>
+    <p id="saving-text">점수 저장 중...</p>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyAJFodCtd0nZ9R3FIjKN0FSsBvFZkYVcqo",
+  authDomain:"cat-quiz-ece53.firebaseapp.com",
+  projectId:"cat-quiz-ece53",
+  storageBucket:"cat-quiz-ece53.firebasestorage.app",
+  messagingSenderId:"306933977395",
+  appId:"1:306933977395:web:bd9d55fc46d0091d95ae46"
+});
+const db = getFirestore(app);
+
+// ── QUIZ DATA (50문제 Pool — 30문제 랜덤 추출) ────────────────────
+// PIC/S Annex 22 (신규제정·AI) 10개 섹션 전체 커버
+// type: 'ox' | 'mc' / answer: 'O'|'X' for ox, 0-indexed for mc
+const QUESTIONS = [
+  // ─────────────────────────────────────────────────────
+  // [§1] Scope — 적용 범위
+  // ─────────────────────────────────────────────────────
+  {
+    type:'ox',
+    qko:'Annex 22는 환자 안전·제품 품질·데이터 무결성에 직접 영향을 미치는 중요 응용(Critical Application)에 AI 모델이 사용되는 전산화 시스템에 적용된다.',
+    qen:'Annex 22 applies to computerised systems where AI models are used in critical applications with direct impact on patient safety, product quality, or data integrity.',
+    answer:'O',
+    exko:'§1 Scope. Annex 22는 데이터 예측·분류 등 중요 GMP 응용에 사용되는 AI 모델에 적용되며, Annex 11(전산화 시스템)에 대한 추가 가이던스를 제공합니다.',
+    exen:'§1 Scope. Annex 22 applies to AI models used in critical GMP applications like prediction/classification, providing additional guidance to Annex 11 (Computerised Systems).'
+  },
+  {
+    type:'ox',
+    qko:'Annex 22는 정적 모델(Static Model)뿐 아니라 사용 중 새로운 데이터를 반영해 지속적으로 학습·적응하는 동적 모델(Dynamic Model)에도 적용된다.',
+    qen:'Annex 22 applies to both static models and dynamic models that continuously learn and adapt during use.',
+    answer:'X',
+    exko:'§1 Annex 22는 정적 모델(Static Model)에만 적용됩니다. 사용 중 지속 학습·적응하는 동적 모델은 본 문서에 포함되지 않으며, 중요 GMP 응용에 사용해서는 안 됩니다.',
+    exen:'§1 Annex 22 applies only to static models. Dynamic models that continuously learn/adapt during use are not covered and should not be used in critical GMP applications.'
+  },
+  {
+    type:'ox',
+    qko:'생성형 AI(Generative AI)와 거대 언어 모델(LLM)은 중요 GMP 응용에 사용해서는 안 된다.',
+    qen:'Generative AI and Large Language Models (LLM) should not be used in critical GMP applications.',
+    answer:'O',
+    exko:'§1 생성형 AI와 LLM은 확률적 출력(Probabilistic Output)을 가지므로 Annex 22 적용 대상이 아니며, 중요 GMP 응용에 사용 불가입니다. 비중요 응용에서는 HITL(Human-in-the-loop) 하에 사용 가능합니다.',
+    exen:'§1 Generative AI and LLMs have probabilistic outputs, are outside Annex 22 scope, and cannot be used in critical GMP applications. They may be used in non-critical applications under HITL.'
+  },
+  {
+    type:'ox',
+    qko:'Annex 22는 명시적으로 프로그래밍되지 않고 데이터 학습을 통해 기능을 획득한 머신러닝(AI/ML) 모델에 적용된다.',
+    qen:'Annex 22 applies to machine learning (AI/ML) models that obtained functionality through training with data, rather than being explicitly programmed.',
+    answer:'O',
+    exko:'§1 Annex 22는 데이터 학습 기반 ML 모델에 적용됩니다. 여러 개별 모델로 구성되어 각각 특정 GMP 공정 단계를 자동화할 수 있습니다.',
+    exen:'§1 Annex 22 applies to data-trained ML models. Models may consist of several individual models, each automating specific GMP process steps.'
+  },
+  {
+    type:'ox',
+    qko:'동일한 입력에 대해 동일한 출력을 제공하는 결정론적 출력(Deterministic Output) 모델이 Annex 22의 적용 대상이다.',
+    qen:'Models with deterministic output (identical inputs give identical outputs) are within Annex 22\'s scope.',
+    answer:'O',
+    exko:'§1 결정론적 출력 모델만 Annex 22 적용 대상입니다. 동일 입력에도 다른 출력이 나올 수 있는 확률적 출력 모델은 중요 GMP 응용에 사용 불가입니다.',
+    exen:'§1 Only deterministic output models are within scope. Probabilistic output models (where identical inputs may give different outputs) cannot be used in critical GMP applications.'
+  },
+  {
+    type:'mc',
+    qko:'다음 중 Annex 22의 적용 대상(중요 GMP 응용에 사용 가능)인 모델은?',
+    qen:'Which model is within Annex 22\'s scope (usable in critical GMP applications)?',
+    options_ko:['동적 모델 (지속 학습·적응)','생성형 AI (Generative AI)','거대 언어 모델 (LLM)','정적·결정론적 출력 ML 모델'],
+    options_en:['Dynamic model (continuous learning)','Generative AI','Large Language Model (LLM)','Static deterministic ML model'],
+    answer:3,
+    exko:'Annex 22 적용 대상: ①정적 모델(Static) ②결정론적 출력(Deterministic) ③데이터 학습 ML 모델. 동적 모델, 생성형 AI, LLM은 모두 중요 GMP 응용에 사용 불가입니다.',
+    exen:'Annex 22 scope: ①Static models ②Deterministic output ③Data-trained ML. Dynamic models, Generative AI, and LLMs cannot be used in critical GMP applications.'
+  },
+
+  // ─────────────────────────────────────────────────────
+  // [§2] Principles — 기본 원칙
+  // ─────────────────────────────────────────────────────
+  {
+    type:'ox',
+    qko:'AI 모델의 알고리즘 선택, 학습, 검증, 테스트, 운영 전반에 걸쳐 공정 SME, QA, 데이터 과학자, IT, 컨설턴트 등 관련 당사자 간 긴밀한 협력이 필요하다.',
+    qen:'Close cooperation among relevant parties (process SMEs, QA, data scientists, IT, consultants) is needed throughout algorithm selection, training, validation, testing, and operation.',
+    answer:'O',
+    exko:'§2.1 Personnel. AI는 다학제적 협력이 필수입니다. 모든 인원은 적절한 자격, 정의된 책임, 적절한 접근 권한을 가져야 합니다.',
+    exen:'§2.1 Personnel. AI requires multidisciplinary cooperation. All personnel must have adequate qualifications, defined responsibilities, and appropriate access.'
+  },
+  {
+    type:'ox',
+    qko:'AI 모델이 공급업체에 의해 학습·검증·테스트된 경우, 규제 대상 사용자는 관련 문서를 검토할 필요가 없다.',
+    qen:'If an AI model is trained, validated, and tested by a supplier, the regulated user does not need to review the related documentation.',
+    answer:'X',
+    exko:'§2.2 Documentation. 사내 개발이든 공급업체 제공이든 관계없이, 규제 대상 사용자는 모든 관련 문서를 이용 가능하게 하고 검토해야 합니다. 책임은 외주가 불가능합니다.',
+    exen:'§2.2 Documentation. Whether in-house or supplier-provided, the regulated user must have documentation available and review it. Responsibility cannot be outsourced.'
+  },
+  {
+    type:'ox',
+    qko:'Annex 22의 활동은 환자 안전·제품 품질·데이터 무결성에 대한 위험에 기반하여 구현되어야 한다.',
+    qen:'Activities in Annex 22 should be implemented based on the risk to patient safety, product quality, and data integrity.',
+    answer:'O',
+    exko:'§2.3 Quality Risk Management. QRM은 AI 모델 적용의 모든 단계에 적용되는 핵심 원칙입니다.',
+    exen:'§2.3 Quality Risk Management. QRM is a core principle applied to all stages of AI model implementation.'
+  },
+
+  // ─────────────────────────────────────────────────────
+  // [§3] Intended Use — 의도된 사용
+  // ─────────────────────────────────────────────────────
+  {
+    type:'ox',
+    qko:'AI 모델의 의도된 사용(Intended Use)은 모델이 통합된 공정에 대한 깊은 지식을 바탕으로 상세히 기술되어야 한다.',
+    qen:'The intended use of an AI model should be described in detail based on in-depth knowledge of the process the model is integrated in.',
+    answer:'O',
+    exko:'§3.1 의도된 사용 기술에는 입력 데이터의 포괄적 특성화, 일반·희귀 변형(입력 표본 공간), 한계·오류·편향 입력 식별이 포함됩니다. 공정 SME가 적정성에 책임을 지며, 합격 테스트 전 문서화·승인되어야 합니다.',
+    exen:'§3.1 Intended use description includes comprehensive input data characterisation, common/rare variations (input sample space), and identification of limitations, errors, biased inputs. A process SME is responsible, documented and approved before acceptance testing.'
+  },
+  {
+    type:'ox',
+    qko:'입력 표본 공간(Input Sample Space)은 결정 출력(예: accept/reject), 공정 기준 특성, 자재·제품 특성 등에 따라 하위 그룹(Subgroups)으로 나뉠 수 있다.',
+    qen:'The input sample space may be divided into subgroups based on decision output (e.g., accept/reject), process baseline characteristics, material/product characteristics.',
+    answer:'O',
+    exko:'§3.2 Subgroups. 하위 그룹 분류는 모델 성능을 세분화하여 평가하기 위함입니다. 결함 유형·심각도 등 자동화 작업 특화 특성도 기준이 됩니다.',
+    exen:'§3.2 Subgroups. Subgroup classification enables granular performance evaluation. Task-specific characteristics like defect types/severity are also criteria.'
+  },
+  {
+    type:'ox',
+    qko:'HITL(Human-in-the-loop)에서 모델 테스트 노력이 줄어든 경우, 의도된 사용 기술에 운영자의 책임이 포함되어야 한다.',
+    qen:'In HITL where testing effort is diminished, the description of intended use should include the operator\'s responsibility.',
+    answer:'O',
+    exko:'§3.3 Human-in-the-loop. 운영자가 모델 입력을 받아 결정하는 경우, 운영자의 교육과 일관된 성과가 다른 수동 공정처럼 모니터링되어야 합니다.',
+    exen:'§3.3 HITL. When operators make decisions using model input, the operator\'s training and consistent performance must be monitored like any other manual process.'
+  },
+  {
+    type:'mc',
+    qko:'§3 Intended Use에서 의도된 사용 기술의 적정성에 책임을 지는 사람은?',
+    qen:'Who is responsible for the adequacy of the intended use description under §3?',
+    options_ko:['데이터 과학자','공정 SME (Subject Matter Expert)','IT 관리자','외부 컨설턴트'],
+    options_en:['Data scientist','Process SME (Subject Matter Expert)','IT manager','External consultant'],
+    answer:1,
+    exko:'§3.1 공정 SME(Subject Matter Expert)가 의도된 사용 기술의 적정성에 책임을 집니다. 합격 테스트 시작 전 문서화·승인되어야 합니다.',
+    exen:'§3.1 A process SME is responsible for the adequacy of the intended use description, documented and approved before acceptance testing begins.'
+  },
+
+  // ─────────────────────────────────────────────────────
+  // [§4] Acceptance Criteria — 합격 기준
+  // ─────────────────────────────────────────────────────
+  {
+    type:'ox',
+    qko:'제품 분류(accept/reject) 모델의 적합한 테스트 지표에는 혼동 행렬(Confusion Matrix), 민감도, 특이도, 정확도, 정밀도, F1 score 등이 포함될 수 있다.',
+    qen:'Suitable test metrics for a classification model (accept/reject) may include confusion matrix, sensitivity, specificity, accuracy, precision, and F1 score.',
+    answer:'O',
+    exko:'§4.1 Test metrics. 사례별로 적합한 테스트 지표를 정의하여 의도된 사용에 따른 모델 성능을 측정해야 합니다.',
+    exen:'§4.1 Test metrics. Case-dependent test metrics should be defined to measure model performance according to intended use.'
+  },
+  {
+    type:'ox',
+    qko:'AI 모델의 합격 기준은 모델이 대체하는 공정의 성능보다 낮아도 무방하다.',
+    qen:'The acceptance criteria of an AI model may be lower than the performance of the process it replaces.',
+    answer:'X',
+    exko:'§4.3 No decrease. 모델의 합격 기준은 대체하는 공정의 성능과 "최소한 동등 이상"이어야 합니다. 따라서 대체 대상 공정의 성능을 먼저 알아야 합니다(Annex 11 §2.8 No risk increase 연계).',
+    exen:'§4.3 No decrease. Acceptance criteria must be at least as high as the process being replaced. Therefore the performance of the replaced process must be known (linked to Annex 11 §2.8).'
+  },
+  {
+    type:'ox',
+    qko:'합격 기준은 의도된 사용 내의 특정 하위 그룹마다 다를 수 있다.',
+    qen:'Acceptance criteria may differ for specific subgroups within the intended use.',
+    answer:'O',
+    exko:'§4.2 Acceptance criteria. 공정 SME가 합격 기준 정의에 책임을 지며, 합격 테스트 시작 전 문서화·승인되어야 합니다. 하위 그룹별로 다른 기준 적용이 가능합니다.',
+    exen:'§4.2 A process SME is responsible for defining acceptance criteria, documented and approved before testing. Different criteria may apply per subgroup.'
+  },
+  {
+    type:'mc',
+    qko:'§4.3 "No decrease" 원칙의 핵심 의미는?',
+    qen:'What is the core meaning of the §4.3 "No decrease" principle?',
+    options_ko:['모델 성능은 대체 공정보다 최소한 동등 이상이어야 함','모델 비용은 항상 절감되어야 함','모델은 항상 사람보다 빨라야 함','데이터 양은 항상 증가해야 함'],
+    options_en:['Model performance must be at least equal to the replaced process','Model cost must always decrease','Model must always be faster than humans','Data volume must always increase'],
+    answer:0,
+    exko:'§4.3 모델의 합격 기준은 대체하는 공정의 성능과 최소한 동등 이상이어야 합니다. 이는 대체 공정의 성능이 알려져 있어야 함을 의미합니다.',
+    exen:'§4.3 The model\'s acceptance criteria must be at least as high as the replaced process performance. This implies the replaced process performance must be known.'
+  },
+
+  // ─────────────────────────────────────────────────────
+  // [§5] Test Data — 테스트 데이터
+  // ─────────────────────────────────────────────────────
+  {
+    type:'ox',
+    qko:'테스트 데이터는 의도된 사용의 전체 표본 공간을 대표하고 확장해야 하며, 모든 하위 그룹을 포함하고 일반·희귀 변형을 반영해야 한다.',
+    qen:'Test data should be representative of and expand the full sample space, include all subgroups, and reflect common and rare variations.',
+    answer:'O',
+    exko:'§5.1 Selection. 테스트 데이터는 계층화(Stratified)되어야 하며, 한계·복잡성·변형을 반영해야 합니다. 선택 기준과 근거가 문서화되어야 합니다.',
+    exen:'§5.1 Selection. Test data should be stratified, reflecting limitations, complexity, and variations. Selection criteria and rationale must be documented.'
+  },
+  {
+    type:'ox',
+    qko:'테스트 데이터셋과 그 하위 그룹은 적절한 통계적 신뢰도로 테스트 지표를 계산할 수 있을 만큼 충분한 크기여야 한다.',
+    qen:'The test dataset and its subgroups should be sufficient in size to calculate test metrics with adequate statistical confidence.',
+    answer:'O',
+    exko:'§5.2 Sufficient in size. 통계적 신뢰도 확보를 위한 충분한 데이터 크기는 모델 성능 평가의 신뢰성을 좌우합니다.',
+    exen:'§5.2 Sufficient in size. Adequate data size for statistical confidence determines the reliability of model performance evaluation.'
+  },
+  {
+    type:'ox',
+    qko:'테스트 데이터의 라벨링(Labelling)은 매우 높은 정확도를 보장하는 프로세스를 통해 검증되어야 한다.',
+    qen:'The labelling of test data should be verified following a process that ensures a very high degree of correctness.',
+    answer:'O',
+    exko:'§5.3 Labelling. 다수 전문가의 독립 검증, 검증된 장비, 실험실 시험 등을 통해 라벨 정확도를 보장해야 합니다. 잘못된 라벨은 모델 평가 전체를 무효화합니다.',
+    exen:'§5.3 Labelling. Label accuracy must be ensured via independent verification by multiple experts, validated equipment, or lab tests. Incorrect labels invalidate the entire evaluation.'
+  },
+  {
+    type:'ox',
+    qko:'생성형 AI를 이용한 테스트 데이터나 라벨 생성은 권장되며, 별도의 정당화 없이 자유롭게 사용할 수 있다.',
+    qen:'Generation of test data or labels using generative AI is recommended and can be used freely without justification.',
+    answer:'X',
+    exko:'§5.6 Data generation. 생성형 AI를 이용한 테스트 데이터·라벨 생성은 권장되지 "않으며", 사용 시 충분한 정당화가 필요합니다.',
+    exen:'§5.6 Data generation. Generating test data/labels via generative AI is NOT recommended, and any use must be fully justified.'
+  },
+  {
+    type:'ox',
+    qko:'테스트 데이터의 전처리(변환, 정규화, 표준화)는 사전 명시되어야 하며 의도된 사용 조건을 대표한다는 근거가 제공되어야 한다.',
+    qen:'Pre-processing of test data (transformation, normalisation, standardisation) should be pre-specified with rationale that it represents intended use conditions.',
+    answer:'O',
+    exko:'§5.4 Pre-processing. 전처리는 사후 임의 적용이 아닌 사전 명시가 원칙입니다. §5.5에 따라 데이터 정제·제외도 문서화·정당화되어야 합니다.',
+    exen:'§5.4 Pre-processing. Pre-processing must be pre-specified, not arbitrarily applied afterward. Per §5.5, data cleaning/exclusion must also be documented and justified.'
+  },
+  {
+    type:'mc',
+    qko:'§5 Test Data에서 데이터 정제나 제외(Exclusion) 시 요구되는 것은?',
+    qen:'What is required when cleaning or excluding test data under §5?',
+    options_ko:['아무 조치 없이 자유롭게 제외','문서화 및 완전한 정당화','관리자 구두 승인만','제외 후 즉시 삭제'],
+    options_en:['Free exclusion without action','Documentation and full justification','Verbal manager approval only','Immediate deletion after exclusion'],
+    answer:1,
+    exko:'§5.5 Exclusion. 테스트 데이터의 정제나 제외는 반드시 문서화되고 완전히 정당화되어야 합니다. 임의 제외는 데이터 무결성 위반입니다.',
+    exen:'§5.5 Exclusion. Any cleaning or exclusion of test data must be documented and fully justified. Arbitrary exclusion violates data integrity.'
+  },
+
+  // ─────────────────────────────────────────────────────
+  // [§6] Test Data Independency — 테스트 데이터 독립성
+  // ─────────────────────────────────────────────────────
+  {
+    type:'ox',
+    qko:'테스트 데이터는 모델의 개발·학습·검증에 사용되지 않아야 하며, 이를 보장하기 위한 기술적·절차적 통제가 구현되어야 한다.',
+    qen:'Test data must not be used during development, training, or validation of the model, and technical/procedural controls should ensure this independence.',
+    answer:'O',
+    exko:'§6.1 Independence. 테스트 데이터 독립성은 모델 평가 신뢰성의 핵심입니다. 학습·검증 완료 후 테스트 데이터 확보, 또는 학습 시작 전 데이터 분리로 보장합니다.',
+    exen:'§6.1 Independence. Test data independence is core to evaluation reliability. Ensured by capturing test data after training/validation, or splitting before training begins.'
+  },
+  {
+    type:'ox',
+    qko:'테스트 데이터를 학습 전 분리한 경우, 모델 개발·학습에 관여한 직원이 테스트 데이터에 접근한 적이 있어도 무방하다.',
+    qen:'If test data is split before training, it is acceptable for staff involved in development/training to have accessed the test data.',
+    answer:'X',
+    exko:'§6.2 Data split. 개발·학습에 관여한 직원은 테스트 데이터에 "절대 접근한 적이 없어야" 합니다. 테스트 데이터는 접근 통제·audit trail로 보호되며, 저장소 외부에 사본이 없어야 합니다.',
+    exen:'§6.2 Data split. Staff involved in development/training must NEVER have had access to test data. Test data is protected by access control and audit trail, with no copies outside the repository.'
+  },
+  {
+    type:'ox',
+    qko:'어떤 데이터가 테스트에 사용되었는지, 언제, 몇 번 사용되었는지 기록되어야 한다.',
+    qen:'It should be recorded which data has been used for testing, when, and how many times.',
+    answer:'O',
+    exko:'§6.3 Identification. 테스트 데이터 사용 이력 기록은 테스트의 독립성과 무결성을 입증하는 핵심 증거입니다.',
+    exen:'§6.3 Identification. Recording test data usage history is key evidence proving test independence and integrity.'
+  },
+  {
+    type:'ox',
+    qko:'테스트 데이터 접근 직원과 학습·검증 직원의 독립성 유지가 불가능한 조직에서는, 4-eyes 원칙(접근 이력 없는 동료와 함께 작업)을 적용할 수 있다.',
+    qen:'In organisations where independence is impossible, the 4-eyes principle (working in pair with a colleague without access) may be applied.',
+    answer:'O',
+    exko:'§6.5 Staff independency. 직원 독립성이 원칙이나, 불가능한 경우 테스트 데이터 접근 이력이 없는 동료와 짝을 이뤄 작업하는 4-eyes 원칙으로 보완합니다.',
+    exen:'§6.5 Staff independency. Independence is the principle, but where impossible, the 4-eyes principle (pairing with a colleague without test data access) compensates.'
+  },
+  {
+    type:'mc',
+    qko:'§6 Test Data Independency의 핵심 목적은?',
+    qen:'What is the core purpose of §6 Test Data Independency?',
+    options_ko:['테스트 속도 향상','테스트 데이터가 학습에 사용되지 않도록 보장 (객관적 평가)','데이터 저장 공간 절약','모델 학습량 증가'],
+    options_en:['Faster testing','Ensuring test data is not used in training (objective evaluation)','Saving storage space','Increasing training volume'],
+    answer:1,
+    exko:'§6 테스트 데이터 독립성의 핵심은 학습에 사용된 데이터로 테스트하지 않도록 보장하는 것입니다. 이는 모델의 객관적 일반화 성능 평가를 위함입니다.',
+    exen:'§6 The core of test data independence is ensuring test data was not used in training, enabling objective evaluation of the model\'s generalisation performance.'
+  },
+
+  // ─────────────────────────────────────────────────────
+  // [§7] Test Execution — 테스트 실행
+  // ─────────────────────────────────────────────────────
+  {
+    type:'ox',
+    qko:'테스트는 모델이 의도된 사용에 적합하고 "잘 일반화(Generalising Well)"되는지, 즉 새로운 데이터에서도 만족스러운 성능을 보이는지 보장해야 한다.',
+    qen:'The test should ensure the model is fit for intended use and "generalising well," i.e., performs satisfactorily with new data.',
+    answer:'O',
+    exko:'§7.1 Fit for intended use. 테스트는 모델의 과적합(Overfitting)이나 과소적합(Underfitting)을 탐지하는 것을 포함합니다.',
+    exen:'§7.1 Fit for intended use. Testing includes detecting possible over- or underfitting of the model to training data.'
+  },
+  {
+    type:'ox',
+    qko:'테스트 시작 전 테스트 계획(Test Plan)이 준비·승인되어야 하며, 의도된 사용 요약·지표·합격 기준·테스트 데이터 참조·테스트 스크립트가 포함되어야 한다.',
+    qen:'Before testing, a test plan should be prepared and approved, including intended use summary, metrics, acceptance criteria, test data reference, and test script.',
+    answer:'O',
+    exko:'§7.2 Test plan. 공정 SME가 테스트 계획 개발에 참여해야 합니다. 테스트 지표 계산 방법도 포함되어야 합니다.',
+    exen:'§7.2 Test plan. A process SME should be involved in developing the plan, which must include how to calculate test metrics.'
+  },
+  {
+    type:'ox',
+    qko:'테스트 계획에서의 일탈, 합격 기준 미달, 모든 테스트 데이터를 사용하지 않은 누락은 문서화·조사·정당화되어야 한다.',
+    qen:'Any deviation from the test plan, failure to meet acceptance criteria, or omission to use all test data should be documented, investigated, and justified.',
+    answer:'O',
+    exko:'§7.3 Deviation. 테스트 과정의 모든 일탈은 정식 조사 대상입니다. 합격 기준 미달을 임의로 무시하면 데이터 무결성 위반입니다.',
+    exen:'§7.3 Deviation. All test deviations require formal investigation. Arbitrarily ignoring failures to meet acceptance criteria violates data integrity.'
+  },
+  {
+    type:'ox',
+    qko:'모든 테스트 문서는 의도된 사용 기술, 테스트 데이터 특성화, 실제 테스트 데이터와 함께 보관되어야 한다.',
+    qen:'All test documentation should be retained along with the intended use description, test data characterisation, and actual test data.',
+    answer:'O',
+    exko:'§7.4 Test documentation. 테스트 데이터 접근 통제 문서와 관련 audit trail 기록도 다른 GMP 문서처럼 보관되어야 합니다.',
+    exen:'§7.4 Test documentation. Access control documentation for test data and related audit trail records must be retained like other GMP documentation.'
+  },
+
+  // ─────────────────────────────────────────────────────
+  // [§8] Explainability — 설명 가능성
+  // ─────────────────────────────────────────────────────
+  {
+    type:'ox',
+    qko:'중요 GMP 응용 모델의 테스트 중, 시스템은 특정 분류나 결정(예: rejection)에 기여한 테스트 데이터의 특징(Feature)을 포착·기록해야 한다.',
+    qen:'During testing of critical GMP models, systems should capture and record features that contributed to a particular classification or decision (e.g., rejection).',
+    answer:'O',
+    exko:'§8.1 Feature attribution. SHAP values, LIME 같은 특징 귀속 기법이나 히트맵 같은 시각 도구로 결과에 기여한 핵심 요인을 강조해야 합니다.',
+    exen:'§8.1 Feature attribution. Techniques like SHAP values, LIME, or visual tools like heat maps should highlight key factors contributing to the outcome.'
+  },
+  {
+    type:'ox',
+    qko:'모델이 관련성 있고 적절한 특징에 기반해 결정하는지 보장하기 위해, 이러한 특징에 대한 검토가 테스트 결과 승인 프로세스의 일부가 되어야 한다.',
+    qen:'To ensure the model decides based on relevant features, a review of these features should be part of the test result approval process.',
+    answer:'O',
+    exko:'§8.2 Feature justification. 모델이 엉뚱한 특징(예: 배경 노이즈)으로 판단하지 않도록 특징 정당화 검토가 필요합니다. "Clever Hans" 효과 방지가 목적입니다.',
+    exen:'§8.2 Feature justification. Feature review prevents the model from deciding on irrelevant features (e.g., background noise), avoiding the "Clever Hans" effect.'
+  },
+  {
+    type:'mc',
+    qko:'§8 Explainability에서 언급된 특징 귀속(Feature Attribution) 기법은?',
+    qen:'Which feature attribution techniques are mentioned in §8 Explainability?',
+    options_ko:['SHAP values 및 LIME','SQL 및 Python','HTTP 및 FTP','RAM 및 CPU'],
+    options_en:['SHAP values and LIME','SQL and Python','HTTP and FTP','RAM and CPU'],
+    answer:0,
+    exko:'§8.1 특징 귀속 기법: SHAP values(Shapley Additive Explanations), LIME(Local Interpretable Model-Agnostic Explanations). 히트맵 같은 시각 도구도 사용 가능합니다.',
+    exen:'§8.1 Feature attribution techniques: SHAP values (Shapley Additive Explanations), LIME (Local Interpretable Model-Agnostic Explanations). Visual tools like heat maps are also used.'
+  },
+
+  // ─────────────────────────────────────────────────────
+  // [§9] Confidence — 신뢰도
+  // ─────────────────────────────────────────────────────
+  {
+    type:'ox',
+    qko:'데이터 예측·분류 모델을 테스트할 때, 시스템은 각 예측·분류 결과에 대한 모델의 신뢰도 점수(Confidence Score)를 기록해야 한다.',
+    qen:'When testing a prediction/classification model, the system should log the confidence score for each outcome.',
+    answer:'O',
+    exko:'§9.1 Confidence score. 신뢰도 점수 기록은 모델 출력의 신뢰성을 평가하는 핵심 정보입니다.',
+    exen:'§9.1 Confidence score. Logging confidence scores is key information for assessing the reliability of model outputs.'
+  },
+  {
+    type:'ox',
+    qko:'신뢰도 점수가 매우 낮은 경우, 모델은 신뢰할 수 없는 예측을 하기보다 결과를 "미결정(Undecided)"으로 표시하는 것을 고려해야 한다.',
+    qen:'When the confidence score is very low, the model should consider flagging the outcome as "undecided" rather than making unreliable predictions.',
+    answer:'O',
+    exko:'§9.2 Threshold. 적절한 임계값(Threshold) 설정으로 신뢰할 수 있을 때만 예측·분류하도록 해야 합니다. 낮은 신뢰도는 "미결정" 처리가 안전합니다.',
+    exen:'§9.2 Threshold. Appropriate threshold settings ensure predictions only when suitable. Low confidence should be flagged as "undecided" for safety.'
+  },
+  {
+    type:'mc',
+    qko:'§9.2 신뢰도 임계값(Threshold)의 핵심 목적은?',
+    qen:'What is the core purpose of the §9.2 confidence Threshold?',
+    options_ko:['모델 학습 속도 향상','신뢰할 수 있을 때만 예측·분류하도록 보장','데이터 저장 공간 절약','모델 크기 축소'],
+    options_en:['Faster model training','Ensuring predictions only when suitable','Saving storage space','Reducing model size'],
+    answer:1,
+    exko:'§9.2 적절한 임계값 설정은 모델이 신뢰할 수 있을 때만 예측·분류하도록 보장합니다. 신뢰도가 매우 낮으면 "미결정"으로 표시해야 합니다.',
+    exen:'§9.2 Appropriate threshold ensures the model predicts/classifies only when suitable. Very low confidence should be flagged as "undecided."'
+  },
+
+  // ─────────────────────────────────────────────────────
+  // [§10] Operation — 운영
+  // ─────────────────────────────────────────────────────
+  {
+    type:'ox',
+    qko:'테스트된 모델, 구현된 시스템, 자동화·보조하는 전체 공정은 운영 배포 전에 변경 관리(Change Control) 하에 두어야 한다.',
+    qen:'A tested model, the system, and the whole process should be put under change control before deployment in operation.',
+    answer:'O',
+    exko:'§10.1 Change control. 모델·시스템·공정의 모든 변경(입력 물리 객체 변경 포함)은 문서화·평가되어 재테스트 필요 여부를 결정해야 합니다. 재테스트 미실시 결정은 정당화되어야 합니다.',
+    exen:'§10.1 Change control. All changes to model/system/process (including physical input objects) must be documented and evaluated for retest needs. Any decision not to retest must be justified.'
+  },
+  {
+    type:'ox',
+    qko:'테스트된 모델은 운영 배포 전 형상 관리(Configuration Control) 하에 두어야 하며, 무단 변경을 탐지하기 위한 효과적 조치가 사용되어야 한다.',
+    qen:'A tested model should be put under configuration control before deployment, with effective measures to detect unauthorised changes.',
+    answer:'O',
+    exko:'§10.2 Configuration control. 형상 관리는 모델의 무결성을 보장하고 무단 변경을 방지하는 핵심 통제입니다.',
+    exen:'§10.2 Configuration control. Configuration control ensures model integrity and prevents unauthorised changes.'
+  },
+  {
+    type:'ox',
+    qko:'모델의 성능은 정기적으로 모니터링되어야 하며, 조명 조건 변화 같은 전산화 시스템의 변화를 탐지해야 한다.',
+    qen:'Model performance should be regularly monitored to detect changes in the computerised system (e.g., deterioration or change of lighting conditions).',
+    answer:'O',
+    exko:'§10.3 System performance monitoring. 모델 지표 기반 정기 모니터링으로 성능 저하나 환경 변화를 탐지해야 합니다.',
+    exen:'§10.3 System performance monitoring. Regular metric-based monitoring detects performance deterioration or environmental changes.'
+  },
+  {
+    type:'ox',
+    qko:'입력 데이터가 모델 표본 공간과 의도된 사용 내에 여전히 있는지 정기적으로 모니터링하고, 입력 데이터의 드리프트(Drift)를 모니터링하는 지표를 정의해야 한다.',
+    qen:'It should be regularly monitored whether input data is still within the model sample space, and metrics should be defined to monitor input data drift.',
+    answer:'O',
+    exko:'§10.4 Input sample space monitoring. 입력 데이터 드리프트는 모델 성능 저하의 주요 원인입니다. 입력이 의도된 사용 범위를 벗어나는지 지속 감시해야 합니다.',
+    exen:'§10.4 Input sample space monitoring. Input data drift is a major cause of performance degradation. Continuous monitoring of whether inputs stay within intended use is required.'
+  },
+  {
+    type:'ox',
+    qko:'HITL에서 모델 테스트 노력이 줄어든 경우, 공정 중요도와 모델 테스트 수준에 따라 모델의 모든 출력에 대한 일관된 검토·테스트가 요구될 수 있다.',
+    qen:'In HITL where testing effort is diminished, consistent review/test of every model output may be required depending on process criticality and testing level.',
+    answer:'O',
+    exko:'§10.5 Human review. 테스트가 충분치 않은 모델일수록 인간 검토 의존도가 높아집니다. 절차에 따라 모든 출력을 검토·기록해야 할 수 있습니다.',
+    exen:'§10.5 Human review. The less a model is tested, the more human review is needed. Every output may require review and documentation per procedure.'
+  },
+  {
+    type:'mc',
+    qko:'§10 Operation에서 모델 배포 전 반드시 적용해야 할 두 가지 통제는?',
+    qen:'What two controls must be applied before deploying a model under §10 Operation?',
+    options_ko:['속도 최적화와 비용 절감','변경 관리(Change Control)와 형상 관리(Configuration Control)','마케팅과 영업','데이터 삭제와 압축'],
+    options_en:['Speed optimization and cost reduction','Change Control and Configuration Control','Marketing and sales','Data deletion and compression'],
+    answer:1,
+    exko:'§10.1~10.2 모델 배포 전 변경 관리와 형상 관리가 필수입니다. 또한 §10.3~10.5 성능·입력·인간 검토 모니터링도 운영 중 지속되어야 합니다.',
+    exen:'§10.1-10.2 Change Control and Configuration Control are required before deployment. §10.3-10.5 performance/input/human review monitoring must continue during operation.'
+  },
+  {
+    type:'mc',
+    qko:'§10.4에서 모니터링해야 할 입력 데이터의 변화를 무엇이라 하는가?',
+    qen:'What is the change in input data that must be monitored under §10.4 called?',
+    options_ko:['오버피팅 (Overfitting)','드리프트 (Drift)','라벨링 (Labelling)','정규화 (Normalisation)'],
+    options_en:['Overfitting','Drift','Labelling','Normalisation'],
+    answer:1,
+    exko:'§10.4 입력 데이터 드리프트(Drift)는 운영 중 입력 데이터가 모델 학습 시점과 달라지는 현상입니다. 드리프트 모니터링 지표를 정의해 지속 감시해야 합니다.',
+    exen:'§10.4 Input data drift is when operational input data diverges from the training distribution. Drift monitoring metrics must be defined for continuous surveillance.'
+  },
+
+  // ─────────────────────────────────────────────────────
+  // [Glossary] 용어 정의
+  // ─────────────────────────────────────────────────────
+  {
+    type:'ox',
+    qko:'Overfitting(과적합)은 학습 데이터의 세부 사항을 학습하여 새로운 데이터에 일반화할 수 없는 현상을 의미한다.',
+    qen:'Overfitting means learning details from training data that cannot be generalised to new data.',
+    answer:'O',
+    exko:'Glossary. 과적합은 모델이 학습 데이터에만 과도하게 맞춰져 새 데이터에서 성능이 떨어지는 현상입니다. §7.1 테스트의 핵심 탐지 대상입니다.',
+    exen:'Glossary. Overfitting is when a model fits training data too closely and performs poorly on new data. It is a key detection target in §7.1 testing.'
+  },
+  {
+    type:'ox',
+    qko:'Static(정적) 모델은 모든 파라미터가 최종 설정되어 새 데이터에 대한 추가 적응이 허용되지 않는 "동결(Frozen)" 모델을 의미한다.',
+    qen:'A Static model is a "frozen" model where all parameters are finally set, not allowing further adaptation to new data.',
+    answer:'O',
+    exko:'Glossary. 정적(동결) 모델만 Annex 22 적용 대상입니다. 파라미터가 고정되어 동일 입력에 동일 출력을 제공합니다.',
+    exen:'Glossary. Only static (frozen) models are within Annex 22 scope. Fixed parameters provide identical outputs for identical inputs.'
+  },
+  {
+    type:'mc',
+    qko:'Annex 22 Glossary에서 "Test dataset"의 정의는?',
+    qen:'What is the definition of "Test dataset" in the Annex 22 Glossary?',
+    options_ko:['모델 학습에 사용되는 데이터','최종 ML 모델의 성능을 추정하는 데 사용되는 "hold-out" 데이터','모델 개발 중 최적 학습 방법을 알려주는 데이터','모델 배포 후 생성되는 데이터'],
+    options_en:['Data used to train the model','The "hold-out" data used to estimate performance of the final ML model','Data informing optimal training during development','Data generated after deployment'],
+    answer:1,
+    exko:'Glossary. Test dataset은 최종 ML 모델의 성능을 추정하는 "hold-out" 데이터입니다. Training dataset(학습용), Validation dataset(개발 중 최적화용)과 구분됩니다.',
+    exen:'Glossary. The test dataset is "hold-out" data to estimate final ML model performance, distinct from the training dataset and validation dataset (for optimization during development).'
+  },
+  {
+    type:'mc',
+    qko:'Annex 22 Glossary에서 정의한 "Feature"의 의미는?',
+    qen:'What does "Feature" mean in the Annex 22 Glossary?',
+    options_ko:['모델의 가격','더 단순한 고수준 표현으로 축소될 수 있는 데이터의 패턴','컴퓨터의 하드웨어','데이터 저장 위치'],
+    options_en:['The price of the model','A pattern in data that can be reduced to a simpler higher-level representation','Computer hardware','Data storage location'],
+    answer:1,
+    exko:'Glossary. Feature(특징)는 더 단순한 고수준 표현으로 축소될 수 있는 데이터의 패턴입니다. §8 설명 가능성에서 특징 귀속(Feature Attribution)의 대상입니다.',
+    exen:'Glossary. A Feature is a pattern in data reducible to a simpler higher-level representation. It is the target of Feature Attribution in §8 Explainability.'
+  },
+  {
+    type:'mc',
+    qko:'Annex 22 Glossary에서 SHAP의 정의로 옳은 것은?',
+    qen:'Which is the correct definition of SHAP in the Annex 22 Glossary?',
+    options_ko:['데이터 저장 형식','Shapley Additive Explanations; 설명 가능 AI(XAI) 프레임워크','네트워크 프로토콜','데이터베이스 언어'],
+    options_en:['A data storage format','Shapley Additive Explanations; an explainable AI (XAI) framework','A network protocol','A database language'],
+    answer:1,
+    exko:'Glossary. SHAP는 Shapley Additive Explanations로, 표·이미지·텍스트 데이터셋에 대해 모델 비종속적 국소 설명 가능성을 제공하는 XAI 프레임워크입니다.',
+    exen:'Glossary. SHAP (Shapley Additive Explanations) is an XAI framework providing model-agnostic local explainability for tabular, image, and text datasets.'
+  },
+  {
+    type:'mc',
+    qko:'Annex 22 Glossary에서 정의한 "Model"의 의미는?',
+    qen:'What is the definition of "Model" in the Annex 22 Glossary?',
+    options_ko:['학습 데이터에서 패턴(특징)을 학습할 수 있도록 아키텍처에 배열된 파라미터(가중치)를 가진 수학적 알고리즘','컴퓨터 운영체제','데이터 백업 시스템','네트워크 방화벽'],
+    options_en:['Mathematical algorithms with parameters (weights) in an architecture that allows learning patterns from training data','A computer operating system','A data backup system','A network firewall'],
+    answer:0,
+    exko:'Glossary. Model은 학습 데이터에서 패턴(특징)을 학습할 수 있도록 아키텍처에 배열된 파라미터(가중치)를 가진 수학적 알고리즘입니다.',
+    exen:'Glossary. A Model is a mathematical algorithm with parameters (weights) arranged in an architecture that allows learning patterns (features) from training data.'
+  },
+  {
+    type:'mc',
+    qko:'Annex 22에서 LLM과 생성형 AI를 비중요(Non-Critical) 응용에 사용할 때 반드시 필요한 것은?',
+    qen:'What is required when using LLMs and Generative AI in non-critical applications under Annex 22?',
+    options_ko:['아무 조건 없이 자유 사용','적절한 자격·교육을 갖춘 인원의 HITL(Human-in-the-loop) 책임','모델 자율 운영','데이터 무제한 생성'],
+    options_en:['Free use without conditions','HITL responsibility by adequately qualified/trained personnel','Autonomous model operation','Unlimited data generation'],
+    answer:1,
+    exko:'§1 Scope. LLM·생성형 AI를 비중요 응용에 사용할 경우, 적절한 자격·교육을 갖춘 인원이 출력의 적합성을 보장하는 HITL(Human-in-the-loop)이 항상 책임져야 합니다.',
+    exen:'§1 Scope. When using LLMs/Generative AI in non-critical applications, adequately qualified personnel must always be responsible for ensuring output suitability via HITL (Human-in-the-loop).'
+  }
+];
+
+// ── STATE ─────────────────────────────────────────────────────────
+let lang='ko', totalCount=30, questions=[], current=0, score=0;
+let answered=false, lastAnswerOk=false, playerName='', prevScreen='screen-start';
+let hofRows=[];
+
+// ── LANG ──────────────────────────────────────────────────────────
+function t(ko,en){return lang==='ko'?ko:en;}
+
+window.setLang=function(l){
+  lang=l;
+  document.getElementById('btn-ko').classList.toggle('active',l==='ko');
+  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  document.getElementById('hall-btn').textContent=t('🏆 명예의 전당','🏆 Hall of Fame');
+  // start
+  document.getElementById('start-title').innerHTML=t('Annex 22 (신규제정)<br><em>Artificial Intelligence</em>','Annex 22 (New)<br><em>Artificial Intelligence</em>');
+  document.getElementById('start-sub').textContent=t('PIC/S GMP Annex 22 · AI/ML · Static Model · 10 Sections','PIC/S GMP Annex 22 · AI/ML · Static Model · 10 Sections');
+  document.getElementById('lbl-q').textContent=t('문제','Questions');
+  document.getElementById('lbl-ox').textContent=t('O/X + 객관식','O/X + MCQ');
+  document.getElementById('lbl-fda').textContent=t('실사 기반','FDA Based');
+  document.getElementById('label-name').textContent=t('참여자 이름','Your Name');
+  document.getElementById('name-input').placeholder=t('이름을 입력하세요','Enter your name');
+  document.getElementById('start-btn').textContent=t('퀴즈 시작하기 →','Start Quiz →');
+  document.getElementById('footer-note').textContent=t('본 퀴즈는 PIC/S Annex 22 (신규제정·인공지능) 학습 목적으로 제작되었습니다','This quiz is for studying the PIC/S Annex 22 (New · Artificial Intelligence) guideline');
+  // result
+  document.getElementById('lbl-correct').textContent=t('정답','Correct');
+  document.getElementById('lbl-wrong').textContent=t('오답','Wrong');
+  document.getElementById('top10-title').textContent=t('🏅 TOP 10 랭킹','🏅 TOP 10 RANKING');
+  document.getElementById('retry-btn').textContent=t('다시 도전하기 →','Try Again →');
+  // hof
+  document.getElementById('hof-title').textContent=t('명예의 전당','Hall of Fame');
+  document.getElementById('hof-sub').textContent=t('TOP 20 랭킹','TOP 20 RANKING');
+  document.getElementById('hof-back-btn').textContent=t('← 돌아가기','← Go Back');
+  document.getElementById('hof-restart-btn').textContent=t('처음으로 →','Restart →');
+  document.getElementById('download-btn-label').textContent=t('전체 결과 엑셀 다운로드','Download All Results (XLSX)');
+  document.getElementById('hof-download-btn-label').textContent=t('전체 결과 엑셀 다운로드','Download All Results (XLSX)');
+  document.getElementById('saving-text').textContent=t('점수 저장 중...','Saving score...');
+
+  // 화면별 재렌더
+  if(document.getElementById('screen-quiz').classList.contains('active')&&questions.length){
+    renderQ();
+    if(answered) refreshFeedback();
+  }
+  if(document.getElementById('screen-result').classList.contains('active')&&questions.length) refreshResultLang();
+  if(document.getElementById('screen-hof').classList.contains('active')) renderHofTable();
+};
+
+// ── HELPERS ───────────────────────────────────────────────────────
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function buildQuestions(n){
+  const pool=shuffle([...QUESTIONS]);
+  return pool.slice(0,Math.min(n,pool.length));
+}
+
+// ── START ─────────────────────────────────────────────────────────
+window.onNameInput=function(){playerName=document.getElementById('name-input').value.trim();updateStartBtn();};
+function updateStartBtn(){document.getElementById('start-btn').disabled=!playerName;}
+window.startQuiz=function(){questions=buildQuestions(totalCount);current=0;score=0;showScreen('screen-quiz');loadQ();};
+
+function showScreen(id){
+  prevScreen=document.querySelector('.screen.active')?.id||'screen-start';
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ── QUIZ ──────────────────────────────────────────────────────────
+function loadQ(){
+  answered=false;
+  const q=questions[current];
+  document.getElementById('progress-text').textContent=`${current+1} / ${totalCount}`;
+  document.getElementById('score-text').textContent=t(`점수: ${score}`,`Score: ${score}`);
+  document.getElementById('progress-fill').style.width=`${(current/totalCount)*100}%`;
+  document.getElementById('feedback-box').style.display='none';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('check-btn').disabled=true;
+  renderQ();
+}
+
+function renderQ(){
+  const q=questions[current];
+  const badge=document.getElementById('type-badge');
+  badge.className=`type-badge ${q.type}`;
+  badge.textContent=q.type==='ox'?t('O / X 퀴즈','O / X Quiz'):t('📝 객관식','📝 Multiple Choice');
+  document.getElementById('question-text').textContent=lang==='ko'?q.qko:q.qen;
+  document.getElementById('check-btn').textContent=t('정답 확인','Check Answer');
+  document.getElementById('score-text').textContent=t(`점수: ${score}`,`Score: ${score}`);
+  renderOptions();
+}
+
+function renderOptions(){
+  const q=questions[current];
+  const area=document.getElementById('options-area');
+  area.innerHTML='';
+
+  if(q.type==='ox'){
+    const grid=document.createElement('div'); grid.className='ox-grid';
+    ['O','X'].forEach(val=>{
+      const btn=document.createElement('button');
+      btn.className='ox-btn'; btn.dataset.val=val;
+      btn.innerHTML=`${val}<span>${val==='O'?t('맞다','True'):t('틀리다','False')}</span>`;
+      btn.onclick=()=>selectOpt(btn);
+      grid.appendChild(btn);
+    });
+    area.appendChild(grid);
+  } else {
+    const grid=document.createElement('div'); grid.className='mc-grid';
+    const opts=lang==='ko'?q.options_ko:q.options_en;
+    opts.forEach((opt,i)=>{
+      const btn=document.createElement('button');
+      btn.className='mc-btn'; btn.dataset.index=i;
+      btn.innerHTML=`<span class="mc-btn-num">${String.fromCharCode(65+i)}</span>${opt}`;
+      btn.onclick=()=>selectOpt(btn);
+      grid.appendChild(btn);
+    });
+    area.appendChild(grid);
+  }
+}
+
+function selectOpt(clickedBtn){
+  if(answered)return;
+  document.querySelectorAll('.ox-btn,.mc-btn').forEach(b=>b.classList.remove('selected'));
+  clickedBtn.classList.add('selected');
+  document.getElementById('check-btn').disabled=false;
+}
+
+window.checkAnswer=function(){
+  if(answered)return; answered=true;
+  const q=questions[current];
+  let ok=false;
+
+  if(q.type==='ox'){
+    const sel=document.querySelector('.ox-btn.selected');
+    const chosen=sel?sel.dataset.val:'';
+    ok=chosen===q.answer;
+    document.querySelectorAll('.ox-btn').forEach(btn=>{
+      btn.disabled=true;
+      if(btn.dataset.val===q.answer) btn.classList.add('correct');
+      else if(btn.dataset.val===chosen&&!ok) btn.classList.add('wrong');
+    });
+  } else {
+    const sel=document.querySelector('.mc-btn.selected');
+    const idx=sel?parseInt(sel.dataset.index):-1;
+    ok=idx===q.answer;
+    document.querySelectorAll('.mc-btn').forEach((btn,i)=>{
+      btn.disabled=true;
+      if(i===q.answer) btn.classList.add('correct');
+      else if(i===idx&&!ok) btn.classList.add('wrong');
+    });
+  }
+
+  lastAnswerOk=ok;
+  if(ok) score++;
+  refreshFeedback();
+  document.getElementById('check-btn').disabled=true;
+  document.getElementById('score-text').textContent=t(`점수: ${score}`,`Score: ${score}`);
+  if(current<totalCount-1){
+    document.getElementById('next-btn').style.display='block';
+    document.getElementById('next-btn').textContent=t('다음 문제 →','Next Question →');
+  } else {
+    setTimeout(()=>saveAndShowResult(),600);
+  }
+  playSound(ok);
+};
+
+function refreshFeedback(){
+  const q=questions[current];
+  const fb=document.getElementById('feedback-box');
+  fb.style.display='block';
+  fb.className=`feedback-box ${lastAnswerOk?'correct-fb':'wrong-fb'}`;
+  // 정답 오답 메시지
+  if(q.type==='ox'){
+    const ans=q.answer==='O'?t('"맞다" (O)','True (O)'):t('"틀리다" (X)','False (X)');
+    document.getElementById('feedback-result').textContent=lastAnswerOk
+      ?t('✅ 정답입니다!','✅ Correct!')
+      :t(`❌ 오답! 정답은 ${ans} 입니다.`,`❌ Wrong! The answer is ${ans}.`);
+  } else {
+    const opts=lang==='ko'?q.options_ko:q.options_en;
+    document.getElementById('feedback-result').textContent=lastAnswerOk
+      ?t('✅ 정답입니다!','✅ Correct!')
+      :t(`❌ 오답! 정답: ${String.fromCharCode(65+q.answer)}. ${opts[q.answer]}`,
+         `❌ Wrong! Answer: ${String.fromCharCode(65+q.answer)}. ${opts[q.answer]}`);
+  }
+  document.getElementById('feedback-explanation').textContent=`📖 ${lang==='ko'?q.exko:q.exen}`;
+  document.getElementById('check-btn').textContent=t('정답 확인','Check Answer');
+  document.getElementById('next-btn').textContent=t('다음 문제 →','Next Question →');
+
+  // 선택지 텍스트 재렌더(언어 전환 대응)
+  if(!answered) return;
+  if(q.type==='ox'){
+    document.querySelectorAll('.ox-btn').forEach(btn=>{
+      btn.innerHTML=`${btn.dataset.val}<span>${btn.dataset.val==='O'?t('맞다','True'):t('틀리다','False')}</span>`;
+    });
+  } else {
+    const opts=lang==='ko'?q.options_ko:q.options_en;
+    document.querySelectorAll('.mc-btn').forEach((btn,i)=>{
+      btn.innerHTML=`<span class="mc-btn-num">${String.fromCharCode(65+i)}</span>${opts[i]}`;
+    });
+  }
+}
+
+window.nextQuestion=function(){current++;loadQ();};
+
+// ── SOUND ─────────────────────────────────────────────────────────
+let audioCtx=null;
+let bgmNodes=[]; let bgmSessionId=0;
+
+function getACtx(){
+  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  return audioCtx;
+}
+document.addEventListener('touchstart',function ia(){getACtx();document.removeEventListener('touchstart',ia);},{once:true});
+document.addEventListener('click',function ia(){getACtx();document.removeEventListener('click',ia);},{once:true});
+
+function playSound(ok){
+  try{
+    const ctx=getACtx(); const t0=ctx.currentTime;
+    if(ok){
+      [[523,0],[659,0.13],[784,0.26],[1047,0.40]].forEach(([f,d])=>{
+        const o=ctx.createOscillator(),g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);o.type='sine';
+        o.frequency.setValueAtTime(f,t0+d);
+        g.gain.setValueAtTime(0,t0+d);g.gain.linearRampToValueAtTime(0.15,t0+d+0.04);g.gain.exponentialRampToValueAtTime(0.001,t0+d+0.22);
+        o.start(t0+d);o.stop(t0+d+0.23);
+      });
+    } else {
+      [[330,0,0.30],[262,0.35,0.30],[220,0.70,0.45]].forEach(([f,d,dur])=>{
+        const o=ctx.createOscillator(),g=ctx.createGain();
+        o.connect(g);g.connect(ctx.destination);o.type='sine';
+        o.frequency.setValueAtTime(f,t0+d);o.frequency.linearRampToValueAtTime(f*0.82,t0+d+dur);
+        g.gain.setValueAtTime(0,t0+d);g.gain.linearRampToValueAtTime(0.14,t0+d+0.04);g.gain.exponentialRampToValueAtTime(0.001,t0+d+dur+0.05);
+        o.start(t0+d);o.stop(t0+d+dur+0.06);
+      });
+    }
+  }catch(e){}
+}
+
+function stopBgm(){bgmSessionId++;bgmNodes.forEach(n=>{try{n.stop();}catch(e){}});bgmNodes=[];}
+
+function playBgm(){
+  stopBgm(); const myS=++bgmSessionId;
+  try{
+    const ctx=getACtx();
+    const mel=[[523,0,0.28],[659,0.33,0.28],[784,0.66,0.28],[880,1.0,0.42],[784,1.5,0.20],[659,1.75,0.20],[784,2.0,0.55],[698,2.66,0.28],[784,3.0,0.28],[880,3.33,0.28],[1047,3.66,0.42],[880,4.16,0.20],[784,4.41,0.20],[880,4.66,0.55],[784,5.33,0.20],[698,5.55,0.20],[659,5.77,0.20],[523,6.0,0.55],[659,6.66,0.20],[523,6.88,0.20],[440,7.10,0.20],[523,7.33,0.55]];
+    const bas=[[262,0,0.22],[196,0.33,0.22],[196,0.66,0.22],[262,1.0,0.22],[196,1.5,0.22],[196,2.0,0.22],[349,2.66,0.22],[262,3.0,0.22],[262,3.33,0.22],[349,3.66,0.22],[262,4.16,0.22],[262,4.66,0.22],[392,5.33,0.22],[294,5.77,0.22],[262,6.0,0.22],[330,6.66,0.22],[262,7.10,0.22],[262,7.33,0.22]];
+    const loop=8.0;
+    function sched(){
+      if(bgmSessionId!==myS)return;
+      const t0=ctx.currentTime+0.05;
+      [...mel].forEach(([f,w,d])=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='triangle';o.frequency.setValueAtTime(f,t0+w);g.gain.setValueAtTime(0,t0+w);g.gain.linearRampToValueAtTime(0.07,t0+w+0.03);g.gain.exponentialRampToValueAtTime(0.001,t0+w+d);o.start(t0+w);o.stop(t0+w+d+0.01);bgmNodes.push(o);});
+      [...bas].forEach(([f,w,d])=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.setValueAtTime(f,t0+w);g.gain.setValueAtTime(0,t0+w);g.gain.linearRampToValueAtTime(0.05,t0+w+0.04);g.gain.exponentialRampToValueAtTime(0.001,t0+w+d);o.start(t0+w);o.stop(t0+w+d+0.01);bgmNodes.push(o);});
+      setTimeout(()=>{if(bgmSessionId===myS)sched();},(loop-0.3)*1000);
+    }
+    sched();
+  }catch(e){}
+}
+
+// ── EMAIL & EXCEL EXPORT ───────────────────────────────────────────
+const EMAILJS_PUBLIC_KEY='jPt14lizlL33u8-2T';
+const EMAILJS_SERVICE_ID='service_h6a0do9';
+const EMAILJS_TEMPLATE_ID='template_yl5g06g';
+const RECIPIENT_EMAIL='DM@samil-pharm.com';
+
+// EmailJS 초기화
+try{ emailjs.init({publicKey:EMAILJS_PUBLIC_KEY}); }catch(e){console.warn('EmailJS init failed',e);}
+
+async function sendResultEmail(){
+  const statusEl=document.getElementById('email-status');
+  if(!window.emailjs){
+    statusEl.textContent=t('이메일 라이브러리 로드 실패','Email library failed to load');
+    statusEl.className='email-status error';
+    return;
+  }
+  const pct=Math.round((score/totalCount)*100);
+  let grade;
+  if(pct>=90) grade=t('GMP 마스터','GMP Master');
+  else if(pct>=70) grade=t('우수 수료','Excellent');
+  else if(pct>=50) grade=t('기본기 양호','Good Foundation');
+  else grade=t('재교육 필요','Retraining Needed');
+
+  const now=new Date();
+  const datetime=now.toLocaleString(lang==='ko'?'ko-KR':'en-US');
+
+  // 이메일 본문 (한/영)
+  const messageKo=`안녕하세요,
+
+아래는 GMP Quiz 결과입니다.
+
+▣ 참여자: ${playerName}
+▣ 점수: ${score} / ${totalCount}
+▣ 정답률: ${pct}%
+▣ 등급: ${grade}
+▣ 응시 일시: ${datetime}
+
+본 메일은 자동 발송되었습니다.
+GMP Training System`;
+
+  const messageEn=`Hello,
+
+Below are the GMP Quiz results.
+
+▣ Participant: ${playerName}
+▣ Score: ${score} / ${totalCount}
+▣ Percentage: ${pct}%
+▣ Grade: ${grade}
+▣ Date: ${datetime}
+
+This email was sent automatically.
+GMP Training System`;
+
+  const subjectKo=`[Annex 22 Quiz] ${playerName} 님의 퀴즈 결과`;
+  const subjectEn=`[Annex 22 Quiz] ${playerName}'s Quiz Result`;
+
+  const params={
+    to_email: RECIPIENT_EMAIL,
+    participant_name: playerName,
+    score: String(score),
+    total: String(totalCount),
+    percentage: String(pct),
+    grade: grade,
+    datetime: datetime,
+    subject: lang==='ko'?subjectKo:subjectEn,
+    message: lang==='ko'?messageKo:messageEn
+  };
+
+  statusEl.textContent=t('📨 이메일 전송 중...','📨 Sending email...');
+  statusEl.className='email-status';
+  try{
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params);
+    statusEl.textContent=t('✅ 결과가 이메일로 전송되었습니다','✅ Results sent via email');
+    statusEl.className='email-status success';
+  }catch(err){
+    console.error('EmailJS error:',err);
+    statusEl.textContent=t('⚠️ 이메일 전송 실패 (관리자에게 문의)','⚠️ Email failed (contact admin)');
+    statusEl.className='email-status error';
+  }
+}
+
+// 전체 점수 데이터를 가져와 XLSX로 다운로드
+window.downloadXlsx=async function(){
+  if(typeof XLSX==='undefined'){
+    alert(t('엑셀 라이브러리 로드 실패','Excel library failed to load'));
+    return;
+  }
+  const btn1=document.getElementById('result-download-btn');
+  const btn2=document.getElementById('hof-download-btn');
+  [btn1,btn2].forEach(b=>{if(b){b.disabled=true;}});
+  const lblKo='⏳ 다운로드 중...';
+  const lblEn='⏳ Downloading...';
+  document.getElementById('download-btn-label').textContent=t(lblKo,lblEn);
+  document.getElementById('hof-download-btn-label').textContent=t(lblKo,lblEn);
+
+  try{
+    // Firebase에서 전체 데이터 가져오기 (점수 내림차순)
+    const q2=query(collection(db,'annex22_scores'),orderBy('score','desc'));
+    const snap=await getDocs(q2);
+    const rows=[];
+    snap.forEach(doc=>{
+      const d=doc.data();
+      let dt='';
+      if(d.timestamp&&d.timestamp.toDate){
+        dt=d.timestamp.toDate().toLocaleString(lang==='ko'?'ko-KR':'en-US');
+      }
+      const pct=d.total?Math.round((d.score/d.total)*100):0;
+      rows.push({
+        rank: rows.length+1,
+        name: d.name||'',
+        score: d.score||0,
+        total: d.total||0,
+        percentage: pct,
+        datetime: dt
+      });
+    });
+
+    if(!rows.length){
+      alert(t('저장된 기록이 없습니다','No records found'));
+      return;
+    }
+
+    // 헤더 (언어에 따라)
+    const headers=lang==='ko'
+      ? [['순위','이름','점수','총문제','정답률(%)','응시 일시']]
+      : [['Rank','Name','Score','Total','Percentage(%)','Date']];
+    const dataMatrix=rows.map(r=>[r.rank,r.name,r.score,r.total,r.percentage,r.datetime]);
+    const finalData=[...headers,...dataMatrix];
+
+    const ws=XLSX.utils.aoa_to_sheet(finalData);
+    // 컬럼 너비
+    ws['!cols']=[{wch:6},{wch:18},{wch:8},{wch:8},{wch:12},{wch:22}];
+
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, lang==='ko'?'GMP 퀴즈 결과':'GMP Quiz Results');
+
+    const today=new Date().toISOString().slice(0,10);
+    const fname=`Annex22_Quiz_Results_${today}.xlsx`;
+    XLSX.writeFile(wb, fname);
+  }catch(err){
+    console.error('XLSX export error:',err);
+    alert(t('엑셀 다운로드 실패: '+err.message,'Excel download failed: '+err.message));
+  }finally{
+    [btn1,btn2].forEach(b=>{if(b){b.disabled=false;}});
+    document.getElementById('download-btn-label').textContent=t('전체 결과 엑셀 다운로드','Download All Results (XLSX)');
+    document.getElementById('hof-download-btn-label').textContent=t('전체 결과 엑셀 다운로드','Download All Results (XLSX)');
+  }
+};
+
+// ── SAVE & RESULT ──────────────────────────────────────────────────
+async function saveAndShowResult(){
+  document.getElementById('saving-overlay').classList.add('show');
+  try{await addDoc(collection(db,'annex22_scores'),{name:playerName,score,total:totalCount,timestamp:serverTimestamp()});}
+  catch(e){console.error(e);}
+  document.getElementById('saving-overlay').classList.remove('show');
+  await showResult();
+  // 결과 표시 후 이메일 전송 (백그라운드)
+  sendResultEmail();
+}
+
+async function showResult(){
+  showScreen('screen-result');
+  playBgm();
+  document.getElementById('email-status').textContent='';
+  document.getElementById('email-status').className='email-status';
+  const pct=score/totalCount;
+  let emoji,tko,ten,mko,men;
+  if(pct>=0.9){emoji='🏆';tko='GMP 마스터!';ten='GMP Master!';mko='"탁월한 GMP 이해도입니다! 현장의 든든한 수호자네요. 🌟"';men='"Outstanding GMP knowledge! You are a true guardian of the production floor. 🌟"';}
+  else if(pct>=0.7){emoji='⭐';tko='우수 수료!';ten='Excellent!';mko='"훌륭한 점수입니다! 조금 더 다듬으면 완벽해질 거예요. 💪"';men='"Great score! A little more practice and you\'ll be perfect. 💪"';}
+  else if(pct>=0.5){emoji='📋';tko='기본기 양호';ten='Good Foundation';mko='"기본기는 갖추었습니다. 취약 영역을 복습해 보세요. 📚"';men='"Solid foundation. Please review your weak areas. 📚"';}
+  else{emoji='📖';tko='재교육 필요';ten='Retraining Needed';mko='"GMP 교육 자료를 다시 한번 복습하고 재도전해 보세요! 🔄"';men='"Please review the GMP training materials and try again! 🔄"';}
+
+  document.getElementById('result-emoji').textContent=emoji;
+  document.getElementById('result-title').textContent=t(tko,ten);
+  document.getElementById('final-score').textContent=score;
+  document.getElementById('final-total').textContent=t(`/ ${totalCount} 점`,`/ ${totalCount} pts`);
+  document.getElementById('stat-correct').textContent=score;
+  document.getElementById('stat-wrong').textContent=totalCount-score;
+  document.getElementById('result-msg').textContent=t(mko,men);
+
+  const list=document.getElementById('top10-list');
+  list.innerHTML='<div class="hof-loading">⏳</div>';
+  try{
+    const q2=query(collection(db,'annex22_scores'),orderBy('score','desc'),limit(10));
+    const snap=await getDocs(q2);
+    const rows=[];snap.forEach(doc=>rows.push(doc.data()));
+    if(!rows.length){list.innerHTML=`<div class="hof-empty">${t('아직 기록이 없어요 🎯','No records yet 🎯')}</div>`;return;}
+    list.innerHTML='';
+    const medals=['🥇','🥈','🥉'];
+    rows.forEach((r,i)=>{
+      const isMe=r.name===playerName&&r.score===score;
+      const rc=i===0?'gold':i===1?'silver':i===2?'bronze':'';
+      const div=document.createElement('div');div.className=`rank-row${isMe?' me':''}`;
+      div.innerHTML=`<span class="rank-num ${rc}">${i<3?medals[i]:i+1}</span><span class="rank-name">${r.name}${isMe?t(' (나)',' (Me)'):''}</span><span class="rank-score">${r.score}${t('점','pts')}</span>`;
+      list.appendChild(div);
+    });
+  }catch(e){list.innerHTML=`<div class="hof-empty">${t('랭킹을 불러올 수 없어요','Could not load ranking')}</div>`;}
+}
+
+function refreshResultLang(){
+  const pct=score/totalCount;
+  let tko,ten,mko,men;
+  if(pct>=0.9){tko='GMP 마스터!';ten='GMP Master!';mko='"탁월한 GMP 이해도입니다! 현장의 든든한 수호자네요. 🌟"';men='"Outstanding GMP knowledge! You are a true guardian of the production floor. 🌟"';}
+  else if(pct>=0.7){tko='우수 수료!';ten='Excellent!';mko='"훌륭한 점수입니다! 조금 더 다듬으면 완벽해질 거예요. 💪"';men='"Great score! A little more practice and you\'ll be perfect. 💪"';}
+  else if(pct>=0.5){tko='기본기 양호';ten='Good Foundation';mko='"기본기는 갖추었습니다. 취약 영역을 복습해 보세요. 📚"';men='"Solid foundation. Please review your weak areas. 📚"';}
+  else{tko='재교육 필요';ten='Retraining Needed';mko='"GMP 교육 자료를 다시 한번 복습하고 재도전해 보세요! 🔄"';men='"Please review the GMP training materials and try again! 🔄"';}
+  document.getElementById('result-title').textContent=t(tko,ten);
+  document.getElementById('result-msg').textContent=t(mko,men);
+  document.getElementById('final-total').textContent=t(`/ ${totalCount} 점`,`/ ${totalCount} pts`);
+  document.getElementById('lbl-correct').textContent=t('정답','Correct');
+  document.getElementById('lbl-wrong').textContent=t('오답','Wrong');
+  document.getElementById('top10-title').textContent=t('🏅 TOP 10 랭킹','🏅 TOP 10 RANKING');
+  document.getElementById('retry-btn').textContent=t('다시 도전하기 →','Try Again →');
+  document.querySelectorAll('.rank-row').forEach(row=>{
+    const ne=row.querySelector('.rank-name');const se=row.querySelector('.rank-score');
+    if(ne){ne.textContent=ne.textContent.replace(' (나)','').replace(' (Me)','');if(row.classList.contains('me'))ne.textContent+=t(' (나)',' (Me)');}
+    if(se){const n=parseInt(se.textContent);if(!isNaN(n))se.textContent=`${n}${t('점','pts')}`;}
+  });
+}
+
+// ── HALL OF FAME ───────────────────────────────────────────────────
+function renderHofTable(){
+  const content=document.getElementById('hof-content');
+  if(!hofRows.length){content.innerHTML=`<div class="hof-empty">${t('아직 기록이 없어요.<br>퀴즈를 완료하면 이름이 올라와요! 🎯','No records yet.<br>Complete a quiz to appear here! 🎯')}</div>`;return;}
+  const medals=['🥇','🥈','🥉'];
+  let html=`<table class="hof-table"><thead><tr><th>${t('순위','Rank')}</th><th>${t('이름','Name')}</th><th>${t('점수','Score')}</th></tr></thead><tbody>`;
+  hofRows.forEach((r,i)=>{html+=`<tr><td class="hof-rank-cell">${i<3?medals[i]:i+1}</td><td>${r.name}</td><td>${r.score}${t('점','pts')}</td></tr>`;});
+  html+='</tbody></table>';content.innerHTML=html;
+}
+
+window.showHallOfFame=async function(){
+  prevScreen=document.querySelector('.screen.active')?.id||'screen-start';
+  showScreen('screen-hof');
+  stopBgm();
+  setLang(lang);
+  const content=document.getElementById('hof-content');content.innerHTML='<div class="hof-loading">⏳</div>';
+  try{
+    const q2=query(collection(db,'annex22_scores'),orderBy('score','desc'),limit(20));
+    const snap=await getDocs(q2);
+    hofRows=[];snap.forEach(doc=>hofRows.push(doc.data()));
+    renderHofTable();
+  }catch(e){content.innerHTML=`<div class="hof-empty">${t('데이터를 불러올 수 없어요','Could not load data')}</div>`;}
+};
+
+window.goBack=function(){
+  stopBgm();
+  showScreen(prevScreen);
+  if(prevScreen==='screen-result') playBgm();
+};
+
+window.resetQuiz=function(){
+  stopBgm();
+  totalCount=30;questions=[];current=0;score=0;answered=false;
+  document.getElementById('start-btn').disabled=true;
+  showScreen('screen-start');
+  setLang(lang);
+};
+
+// init
+setLang('ko');
+document.addEventListener('touchstart',function startB(){playBgm();document.removeEventListener('touchstart',startB);},{once:true});
+document.addEventListener('click',function startB(){playBgm();document.removeEventListener('click',startB);},{once:true});
+window.startQuiz=function(){questions=buildQuestions(totalCount);current=0;score=0;stopBgm();showScreen('screen-quiz');loadQ();};
+</script>
+</body>
+</html>
